@@ -115,10 +115,18 @@ npm run preview
 
 ## 部署到 GitHub Pages（推荐：Actions 自动构建）
 
+> ⚠️ **顺序很重要：先启用 Pages，再推送代码。**
+> 如果先推代码，第一次 Actions 运行会在 `actions/configure-pages@v5` 这一步失败，
+> 报 `Get Pages site failed ... Error: Not Found`。原因见下面的「常见部署错误」。
+
 ### 一次性配置
 
 1. 新建 GitHub 仓库（例如 `hongwencat-campus`），**不要**勾选自动生成 README。
-2. 在项目根目录执行：
+   > 注意：免费账号下的**私有仓库无法使用 Pages**，必须是公开仓库（或升级付费计划）。
+2. **先启用 Pages**：进入仓库 **Settings → Pages**，
+   把 **Build and deployment → Source** 设置为 **GitHub Actions**。
+   （这一步只是创建 Pages 站点，选完会出现一个可选的模板选择界面，不用管，直接跳过即可。）
+3. 回到本地，在项目根目录执行：
 
    ```bash
    git init
@@ -129,9 +137,23 @@ npm run preview
    git push -u origin main
    ```
 
-3. 打开仓库 **Settings → Pages**，把 **Source** 设置为 **GitHub Actions**。
-4. 回到 **Actions** 页面，等待 `Deploy to GitHub Pages` 变绿。
+4. 打开仓库 **Actions** 页面，等 `Deploy to GitHub Pages` 变绿（约 1-2 分钟）。
 5. 线上地址：`https://<你的用户名>.github.io/<仓库名>/`
+
+> 如果你**已经先推送过**、Actions 已经失败：不用改代码，
+> 补做第 2 步后，到 **Actions** 页面找到那次失败的运行，
+> 点右上角 **Re-run all jobs** 重新跑一遍即可（或随便改点东西再 `git push` 一次）。
+
+### 常见部署错误
+
+| 报错 | 含义 | 解决办法 |
+| --- | --- | --- |
+| `Get Pages site failed. Please verify that the repository has Pages enabled ... Error: Not Found`<br>（出现在 `actions/configure-pages@v5` 这一步） | Pages 站点还没被创建过 | 到 **Settings → Pages → Source** 选 **GitHub Actions**，然后重跑工作流 |
+| `Create Pages site failed. Error: Resource not accessible by integration`<br>（出现在你手动加了 `enablement: true` 之后） | **`enablement: true` 对默认的 `GITHUB_TOKEN` 一定无效**。创建 Pages 站点属于仓库管理操作，而 Actions 的默认令牌在设计上永远没有仓库管理权限，`permissions:` 里写什么都没用。该参数只对个人访问令牌（PAT）或 GitHub App 令牌有效 | 别折腾 PAT，直接按上一条到 Settings 里点一下（30 秒） |
+| `HttpError: Not Found` 但日志里没有 Pages 相关步骤 | 通常是 Pages 未启用导致后续步骤连带失败 | 同上 |
+| 页面一直停在 **「弘文猫科技 · 加载中」**，控制台报 `assets/index-xxx.js 404` | 资源路径指向了域名根目录，而站点在子路径下 | 说明构建用了绝对 base `/`。本项目已改为相对路径 `./`，重新构建部署即可；若你手动设过 `VITE_BASE_PATH=/`，请**清空**它 |
+
+> 小提示：**GitHub 手机 App 里没有 Settings 页面**，只能在浏览器里操作（必要时切换到「桌面版网站」）。
 
 ### 后续更新
 
@@ -145,19 +167,23 @@ git push
 
 ### 关于 base 路径与路由模式
 
-- 默认配置（`VITE_BASE_PATH=/` + **hash 路由**）在
-  `https://<用户名>.github.io/<仓库名>/` 下可以正常工作，
-  刷新任意子页面也不会 404，无需额外设置。
-- 绑定**自定义域名**时，在仓库 **Settings → Pages → Custom domain** 填好域名，
-  `.env.production` 保持 `VITE_BASE_PATH=/` 即可。
-- 如果要改成 **history 路由**（URL 不带 `#`），把 `.env.production` 改为：
+- 构建使用**相对路径** `base='./'`，所以下面这些部署方式**都不用改任何配置**：
+  - 项目站点 `https://<用户名>.github.io/<仓库名>/`
+  - 用户站点 `https://<用户名>.github.io/`
+  - 绑定自定义域名
+  - 以后给仓库改名
+- 路由默认用 **hash 模式**，其 base 会在运行时从当前页面地址自动推导
+  （见 `src/router/index.js` 的 `resolveBase()`），所以点击导航不会跳到域名根目录。
+- 如果要改成 **history 路由**（URL 不带 `#`），**必须**把 `.env.production` 改为：
 
   ```
   VITE_BASE_PATH=/<仓库名>/
   VITE_ROUTER_MODE=history
   ```
 
-  `public/404.html` 已写好深链回退逻辑，会自动把 `/repo/about` 重定向到 `/repo/#/about`。
+  这是唯一需要手填 base 的情况，因为 history 路由必须知道站点挂在哪个子路径下。
+  `public/404.html` 已写好深链回退逻辑，会自动把 `/<仓库名>/about`
+  重定向到 `/<仓库名>/#/about`。
 
 ## 留言表单说明
 

@@ -18,12 +18,40 @@ const routes = [
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound, meta: { title: '页面不存在' } }
 ]
 
-// 默认 hash 模式：GitHub Pages 上无论仓库名如何、也无须 404 回退即可正常刷新
+/**
+ * 推导站点实际所在的路径前缀。
+ *
+ * 为什么不能直接用 Vite 的 BASE_URL：
+ *   本项目的构建 base 是相对路径 './'（这样部署到根目录或子目录都不会 404），
+ *   而 './' 不是路由能用的 base；如果退化成 '/'，在
+ *   https://<用户名>.github.io/<仓库名>/ 这种子路径站点上，
+ *   <router-link> 会生成 href="/#/about"，点击后跳到域名根目录而不是本站。
+ *
+ * 所以这里从 document.baseURI 反推真实前缀：
+ *   根站点   .../            → '/'
+ *   子路径   .../repo/       → '/repo/'
+ *   子路径   .../repo/#/about → '/repo/'（hash 不参与 base）
+ *   本地 file:// 或异常情况 → '/'（相对写法，任何位置都成立）
+ */
+function resolveBase() {
+  const configured = import.meta.env.VITE_BASE_PATH
+  if (configured && configured !== './') return configured
+
+  try {
+    if (typeof document === 'undefined' || location.protocol === 'file:') return '/'
+    const dir = document.baseURI.replace(/[?#].*$/, '').replace(/\/[^/]*$/, '/')
+    return dir && dir.startsWith('http') ? dir : '/'
+  } catch {
+    return '/'
+  }
+}
+
 const mode = import.meta.env.VITE_ROUTER_MODE || 'hash'
+const baseUrl = resolveBase()
+
+// 默认 hash 模式：GitHub Pages 上无论仓库名如何、也无须 404 回退即可正常刷新
 const history =
-  mode === 'history'
-    ? createWebHistory(import.meta.env.BASE_URL)
-    : createWebHashHistory(import.meta.env.BASE_URL)
+  mode === 'history' ? createWebHistory(baseUrl) : createWebHashHistory(baseUrl)
 
 const router = createRouter({
   history,

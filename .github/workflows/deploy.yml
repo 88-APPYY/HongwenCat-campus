@@ -1,5 +1,15 @@
 name: Deploy to GitHub Pages
 
+# ============================================================
+# 首次使用前请先做一件事（只需一次）：
+#   仓库 → Settings → Pages → Build and deployment
+#        → Source 选择 “GitHub Actions”
+#
+# 不先做这一步，第一次运行会在 configure-pages 报
+#   “Get Pages site failed ... Error: Not Found”
+# 补做之后点 Re-run all jobs 即可，不需要改任何代码。
+# ============================================================
+
 on:
   # 推送到 main 分支时自动构建并部署
   push:
@@ -41,6 +51,15 @@ jobs:
       - name: 构建
         run: npm run build
 
+      # 注意：这一步要求仓库已经启用 Pages。
+      # 若仓库还没启用过 Pages，会报 “Get Pages site failed ... Error: Not Found”。
+      # 这不是工作流写错了，而是 Pages 站点尚未创建：
+      #   仓库 → Settings → Pages → Build and deployment → Source → GitHub Actions
+      # 启用一次后，后续部署就永久正常了。
+      #
+      # 不要试图用 enablement: true 绕过：创建 Pages 站点属于仓库管理操作，
+      # Actions 默认的 GITHUB_TOKEN 在设计上没有该权限，写什么 permissions 都无效，
+      # 只会把报错换成 “Resource not accessible by integration”。
       - name: 配置 Pages
         uses: actions/configure-pages@v5
 

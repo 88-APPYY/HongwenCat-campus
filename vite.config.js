@@ -25,15 +25,26 @@ function copyLogos() {
   }
 }
 
-// GitHub Pages 部署说明：
-//  - 用户站点      https://<user>.github.io/            → base 保持 "/"
-//  - 项目站点      https://<user>.github.io/<repo>/     → 默认 hash 路由下 base "/" 也可正常工作
-//  - 自定义域名    在 .env.production 里设置 VITE_BASE_PATH=/
+/**
+ * base 使用相对路径 './'，这是 GitHub Pages 上最省心的选择：
+ *
+ *  - 项目站点  https://<user>.github.io/<repo>/
+ *      资源会被解析到 /<repo>/assets/xxx.js  ✅
+ *  - 用户站点  https://<user>.github.io/
+ *      资源会被解析到 /assets/xxx.js         ✅
+ *  - 自定义域名、以及改仓库名，都无需改配置  ✅
+ *
+ * ⚠️ 千万不要在这里用默认的 "/"：那会让资源指向域名的根目录，
+ *    部署到 https://<user>.github.io/<repo>/ 时必然 404，
+ *    页面会一直停在“加载中”（index.html 里的首屏占位）。
+ *
+ * 只有在需要 history 路由时才要设置绝对 base，见 .env.production。
+ */
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    base: env.VITE_BASE_PATH || '/',
+    base: env.VITE_BASE_PATH || './',
     plugins: [vue(), copyLogos()],
     resolve: {
       alias: {
