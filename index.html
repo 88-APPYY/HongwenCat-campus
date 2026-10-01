@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1D4E9E" />
+
+    <title>弘文猫网络科技有限公司 - 校园数字化服务专家</title>
+    <meta
+      name="description"
+      content="弘文猫网络科技有限公司专注校园数字化服务，提供校园数字平台建设、智慧校园解决方案、教育内容产品研发与定制软件开发，让校园更智慧，让教育更温暖。"
+    />
+    <meta
+      name="keywords"
+      content="弘文猫,弘文猫网络科技,校园数字化,智慧校园,教育科技,小程序开发,校园管理平台,在线教育,软件定制开发"
+    />
+    <meta name="author" content="弘文猫网络科技有限公司" />
+
+    <!-- TODO: 上线后把 og:url 换成正式域名，并补一张 1200x630 的分享图 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="弘文猫网络科技有限公司" />
+    <meta property="og:title" content="弘文猫网络科技有限公司 - 校园数字化服务专家" />
+    <meta
+      property="og:description"
+      content="专注校园数字化服务，提供校园数字平台建设、智慧校园解决方案、教育内容产品研发与定制软件开发。"
+    />
+    <meta property="og:image" content="./images/logo_hwm.png" />
+
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./images/logo_hwm.png" />
+
+    <style>
+      /* 首屏基础样式：JS 未加载完成时也不至于是刺眼的白屏闪烁 */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #ffffff;
+        color: #0f2440;
+        font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Arial,
+          sans-serif;
+      }
+      #app-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        flex-direction: column;
+        gap: 18px;
+      }
+      #app-loading .ring {
+        width: 34px;
+        height: 34px;
+        border: 3px solid #e2e8f4;
+        border-top-color: #1d4e9e;
+        border-radius: 50%;
+        animation: dsh-spin 0.8s linear infinite;
+      }
+      #app-loading .txt {
+        font-size: 14px;
+        color: #6b7a94;
+        letter-spacing: 1px;
+      }
+      @keyframes dsh-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="app-loading">
+        <div class="ring"></div>
+        <div class="txt">弘文猫科技 · 加载中</div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+      // 模块脚本加载失败时的兜底：移除加载占位，避免页面一直显示“加载中”
+      window.setTimeout(function () {
+        if (!document.querySelector('#app > *')) {
+          var box = document.getElementById('app')
+          if (box) box.innerHTML = '<div id="app-loading"><div class="txt">页面加载较慢，请刷新重试</div></div>'
+        }
+      }, 8000)
+    </script>
+  </body>
+</html>

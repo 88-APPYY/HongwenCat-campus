@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  注意：本站默认使用 hash 路由（#/about 这类地址），
+  搜索引擎不会把 # 之后的片段当作独立页面收录，
+  因此这里只登记首页。若切换为 history 路由，再补上各页面的真实路径。
+
+  TODO: 上线后把 example.com 替换为正式域名。
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://example.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

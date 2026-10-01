@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="弘文猫">
+  <rect width="64" height="64" rx="14" fill="#ffffff" />
+  <!-- 左耳（红） -->
+  <path d="M13 32V12l16 9z" fill="#C8102E" />
+  <!-- 右耳（蓝） -->
+  <path d="M51 32V12L35 21z" fill="#1D4E9E" />
+  <!-- 猫头：左右分色 -->
+  <path d="M32 14a19 19 0 0 1 19 19v3a19 19 0 0 1-19 19z" fill="#1D4E9E" />
+  <path d="M32 14a19 19 0 0 0-19 19v3a19 19 0 0 0 19 19z" fill="#C8102E" />
+  <!-- 眼睛与鼻子 -->
+  <circle cx="23" cy="33" r="3.4" fill="#ffffff" />
+  <circle cx="41" cy="33" r="3.4" fill="#ffffff" />
+  <circle cx="23" cy="33" r="1.5" fill="#0F2440" />
+  <circle cx="41" cy="33" r="1.5" fill="#0F2440" />
+  <path d="M30.2 40h3.6L32 43z" fill="#0F2440" />
+  <!-- 摊开的书 -->
+  <path
+    d="M10 50c5-3 11-3 15.5-.6V56C21 53.8 15 53.8 10 56.4z"
+    fill="#ffffff"
+    opacity="0.95"
+  />
+  <path
+    d="M54 50c-5-3-11-3-15.5-.6V56C43 53.8 49 53.8 54 56.4z"
+    fill="#ffffff"
+    opacity="0.95"
+  />
+</svg>

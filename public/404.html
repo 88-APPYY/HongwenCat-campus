@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>弘文猫网络科技有限公司</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #f5f7fb;
+        color: #37475f;
+        font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 14px;
+      }
+      a {
+        color: #1d4e9e;
+      }
+    </style>
+    <script>
+      /*
+       * GitHub Pages 404 回退页。
+       * 默认使用 hash 路由时用不到本页；若切换为 history 路由，
+       * 本页会把 /repo/about 这类深链重写成 /repo/#/about，避免直接 404。
+       */
+      (function () {
+        var segments = location.pathname.split('/').filter(Boolean)
+        // 项目站点形如 /repo/xxx，需要保留仓库名前缀
+        var repo = location.hostname.endsWith('.github.io') ? segments[0] : ''
+        var rest = (repo ? segments.slice(1) : segments).join('/')
+        var target = location.origin + '/' + (repo ? repo + '/' : '') + (rest ? '#/' + rest : '')
+        if (target !== location.href) {
+          location.replace(target)
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <p>页面跳转中，如果没有自动跳转，请 <a href="./">返回首页</a>。</p>
+  </body>
+</html>
